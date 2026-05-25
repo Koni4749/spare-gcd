@@ -155,28 +155,35 @@ with tab1:
             current = quotient
             step += 1
     
-    # 방법 2: 가지치기 (트리 구조)
+    # 방법 2: 가지치기 (트리 구조) - 끝까지 분해되도록 수정됨
     st.markdown("#### 🌳 방법 2: 소인수분해 가지치기")
     st.markdown("""
     자연수를 점진적으로 소인수로 분해하는 과정을 트리 구조로 나타냅니다.
     """)
     
-    tree_text = f"""
-    ```
-                    {number}
-                   /    \\
-    """
-    
-    # 간단한 트리 구조 표현
-    remaining = number
-    level_factors = []
-    for f in set(factors):
-        if remaining % f == 0:
-            tree_text += f"              {f}       {remaining // f}\n"
-            remaining = remaining // f
-            break
-    
-    tree_text += "    ```"
+    tree_text = "```text\n"
+    if len(factors) == 0:
+        tree_text += f"{number}\n"
+    elif len(factors) == 1:
+        tree_text += f"{number} (소수)\n"
+    else:
+        remaining = number
+        indent = 0
+        tree_text += str(remaining) + "\n"
+        
+        # 마지막 몫까지 가지치기를 진행
+        for i in range(len(factors) - 1):
+            f = factors[i]
+            next_remaining = remaining // f
+            
+            tree_text += " " * indent + "/ \\\n"
+            tree_text += " " * indent + f"{f}   {next_remaining}\n"
+            
+            # 다음 분기점의 시작 위치를 맞추기 위해 들여쓰기 증가
+            indent += len(str(f)) + 3
+            remaining = next_remaining
+            
+    tree_text += "```"
     st.markdown(tree_text)
     
     # 방법 3: L자형 나눗셈
